@@ -127,7 +127,10 @@
       // post-operative film, so it can only come after.
       .sort((a, b) => a.date.localeCompare(b.date) || a.rank - b.rank);
 
-    let s = `<p class="eyebrow">${esc(REGION_LABEL[lv.region] || lv.region)}${lv.sub ? ' · ' + esc(lv.sub) : ''}</p>`;
+    let s = `<p class="backline">`
+      + `<button type="button" class="back" data-home><span class="back-arrow" aria-hidden="true">←</span>Overview</button>`
+      + `<kbd class="back-kbd">Esc</kbd></p>`;
+    s += `<p class="eyebrow">${esc(REGION_LABEL[lv.region] || lv.region)}${lv.sub ? ' · ' + esc(lv.sub) : ''}</p>`;
     s += `<h2 class="detail-title">${esc(lv.label)}</h2>`;
     s += `<p class="status-line">${sevTag(lv.severity)}`
        + (lv.surgical ? `<span class="tag tag-surgery">Prior surgery</span>` : '')
@@ -159,6 +162,10 @@
     s += `<h3 class="section-head">Progression — ${nScans} report${nScans === 1 ? '' : 's'}`
        + (ops.length ? ` and ${ops.length} operation${ops.length === 1 ? '' : 's'}` : '') + `</h3>`;
     s += `<ol class="timeline">${entries.map(e => e.html()).join('')}</ol>`;
+    // The timeline can run long enough to push the link at the top out of view, so
+    // the end of the level is also an exit.
+    s += `<p class="backline backline-end">`
+      + `<button type="button" class="back" data-home><span class="back-arrow" aria-hidden="true">←</span>Back to overview</button></p>`;
     return s;
   }
 
@@ -264,6 +271,22 @@
     }
   }
 
+  /* Back to the landing state. Focus moves onto the panel rather than staying on
+     whichever control was clicked, because the in-content links do not survive the
+     re-render and focus would otherwise fall to <body>. */
+  function goHome() {
+    if (selected === null) return;
+    selected = null;
+    renderDetail();
+    syncTabs();
+    var inner = els.detail.parentElement;
+    if (inner) inner.scrollTop = 0;
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      els.detail.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+    }
+    els.detail.focus({ preventScroll: true });
+  }
+
   function move(delta) {
     const idx = tabOrder.indexOf(activeId());
     const next = tabOrder[Math.min(tabOrder.length - 1, Math.max(0, idx + delta))];
@@ -283,10 +306,11 @@
       e.preventDefault();
       select(tab.dataset.level, { focus: true, scroll: true });
     }
-    else if (k === 'Escape' && selected) { e.preventDefault(); selected = null; renderDetail(); syncTabs(); }
+    else if (k === 'Escape' && selected) { e.preventDefault(); goHome(); }
   }
 
   function onClick(e) {
+    if (e.target.closest('[data-home]')) { goHome(); return; }
     const jump = e.target.closest('[data-jump]');
     if (jump) {
       select(jump.dataset.jump, { focus: true });

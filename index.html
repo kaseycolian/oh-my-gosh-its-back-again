@@ -23,8 +23,15 @@
 <header class="masthead">
   <div class="masthead-inner">
     <div class="brand">
-      <h1>Spine imaging record</h1>
-      <p class="brand-sub">Skull base to sacrum · 23 studies · August 2014 – July 2026</p>
+      <div class="brand-text">
+        <h1 class="brand-title">
+          <!-- Doubles as the home control, the way a masthead usually does. The hidden
+               suffix keeps the visible text as a prefix of the accessible name (SC 2.5.3)
+               without an aria-label overriding it. -->
+          <button type="button" class="home" data-home>Spine Imaging Record<span class="sr-only"> — back to overview</span></button>
+        </h1>
+        <p class="brand-sub">Skull base to sacrum · 23 studies · August 2014 – July 2026</p>
+      </div>
     </div>
     <div class="controls">
       <div class="control">

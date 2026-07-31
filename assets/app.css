@@ -77,7 +77,32 @@ button { cursor: pointer; }
   gap: 1rem var(--gutter);
   padding: 1rem var(--gutter);
 }
-.brand h1 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); }
+/* A segmented rule standing in for a spinal column — the same motif as the favicon,
+   at the smallest dose that still registers. */
+.brand { display: flex; align-items: stretch; gap: 0.7rem; }
+.brand::before {
+  content: ""; flex: none; width: 4px; align-self: stretch;
+  background: repeating-linear-gradient(var(--border-strong) 0 6px, transparent 6px 9px);
+  transition: background-image var(--dur) linear;
+}
+.brand:hover::before, .brand:focus-within::before {
+  background: repeating-linear-gradient(var(--accent-pink) 0 6px, transparent 6px 9px);
+}
+
+.brand-title { font-size: clamp(1.15rem, 2.4vw, 1.5rem); letter-spacing: -0.02em; }
+.home {
+  /* inline-flex + min-height so the target clears 24px (SC 2.5.8) once the title
+     size clamps down on a narrow viewport. */
+  display: inline-flex; align-items: center; min-height: 1.5rem;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; letter-spacing: inherit; color: var(--text);
+  text-align: left;
+}
+.home:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
 .brand-sub { margin: 0.15rem 0 0; color: var(--text-muted); font-size: 0.8125rem; }
 
 .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1.25rem; }
@@ -376,6 +401,26 @@ button { cursor: pointer; }
 /* ---------- detail panel ----------------------------------------------- */
 
 .detail { max-width: 46rem; }
+
+/* Route back to the landing state: once on arrival, once where the timeline ends. */
+.backline { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.85rem; }
+.back {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  min-height: 1.75rem; padding: 0.2rem 0.1rem;
+  background: none; border: 0;
+  font-size: 0.8125rem; color: var(--text-muted);
+}
+.back:hover { color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
+.back-arrow { font-size: 1em; line-height: 1; }
+.back:hover .back-arrow { transform: translateX(-2px); }
+.back-arrow { transition: transform var(--dur) linear; }
+.back-kbd {
+  font-family: var(--font-num); font-size: 0.625rem; color: var(--text-muted);
+  border: 1px solid var(--border); padding: 0.05rem 0.3rem;
+}
+.backline-end {
+  margin: 1.5rem 0 0; padding-top: 0.85rem; border-top: var(--rule);
+}
 
 .eyebrow {
   margin: 0 0 0.3rem; font-size: 0.6875rem; text-transform: uppercase;
