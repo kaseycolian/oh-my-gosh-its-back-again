@@ -416,6 +416,14 @@ button { cursor: pointer; }
 .metric dt { color: var(--text-muted); font-size: 0.8125rem; }
 .metric dd { margin: 0; font-size: 0.9375rem; }
 
+/* surgeries called out above the timeline */
+.ops { list-style: none; margin: 0; padding: 0; }
+.op { padding: 0.5rem 0 0.5rem 0.8rem; border-left: 3px solid var(--sev-surgical); }
+.op + .op { margin-top: 0.4rem; }
+.op-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0 0 0.1rem; }
+.op-date { font-weight: 600; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.op-label { margin: 0; font-size: 0.9375rem; color: var(--text-muted); }
+
 /* timeline */
 .timeline { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
 .tl-item { position: relative; padding: 0 0 1.4rem 1.25rem; }
@@ -433,6 +441,7 @@ button { cursor: pointer; }
   text-transform: uppercase; letter-spacing: 0.08em;
 }
 .tl-body { margin: 0 0 0.35rem; }
+.tl-surgery { font-weight: 600; }
 .tl-quote {
   margin: 0.4rem 0; padding: 0.15rem 0 0.15rem 0.8rem;
   border-left: 2px solid var(--sev, var(--border-strong));

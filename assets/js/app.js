@@ -53,13 +53,13 @@
   function findingItem(f) {
     const scan = scanById(f.scan);
     if (!scan) return '';
-    const cls = ['tl-item', `sev-${f.severity}`, f.event === 'surgery' ? 'is-surgery' : ''].filter(Boolean).join(' ');
-    let s = `<li class="${cls}">`;
+    const postOp = f.event === 'post-op';
+    let s = `<li class="tl-item sev-${f.severity}">`;
     s += `<p class="tl-head">`
        + `<span class="tl-date">${esc(scanDateLabel(scan))}</span>`
        + `<span class="tl-mod">${esc(scan.modality)}</span>`
        + sevTag(f.severity)
-       + (f.event === 'surgery' ? `<span class="tag tag-surgery">Surgery</span>` : '')
+       + (postOp ? `<span class="tag tag-surgery">First look after surgery</span>` : '')
        + (scan.dateUncertain ? `<span class="tag tag-flag">Date uncertain</span>` : '')
        + `</p>`;
     s += `<p class="tl-body">${esc(f.text)}</p>`;
@@ -69,6 +69,23 @@
     s += reportBlock(scan);
     return s + `</li>`;
   }
+
+  /* A surgery is its own event on the timeline, not a property of whichever scan
+     happened to catch it. Dating it off the scan would have implied the operation
+     took place on the day of the imaging, which is wrong for both lumbar surgeries. */
+  function surgeryItem(op) {
+    let s = `<li class="tl-item is-surgery">`;
+    s += `<p class="tl-head">`
+       + `<span class="tl-date">${esc(op.dateLabel || fmtDate(op.date))}</span>`
+       + `<span class="tag tag-surgery">Surgery</span>`
+       + (op.dateUncertain ? `<span class="tag tag-flag">Date inferred</span>` : '')
+       + `</p>`;
+    s += `<p class="tl-body tl-surgery">${esc(op.label)}</p>`;
+    if (op.note) s += `<p class="tl-note">${esc(op.note)}</p>`;
+    return s + `</li>`;
+  }
+
+  const surgeriesFor = id => SURGERIES.filter(op => op.levels.indexOf(id) >= 0);
 
   /* Imaging-coverage figures, counted from SCANS rather than written down. */
   function coverageMetrics() {
@@ -101,10 +118,14 @@
   }
 
   function renderLevel(lv) {
-    const sorted = lv.findings.slice().sort((a, b) => {
-      const A = scanById(a.scan), B = scanById(b.scan);
-      return (A ? A.date : '').localeCompare(B ? B.date : '');
-    });
+    // Scans and surgeries interleave on one chronological track.
+    const ops = surgeriesFor(lv.id);
+    const entries = lv.findings
+      .map(f => ({ date: (scanById(f.scan) || {}).date || '', rank: 1, html: () => findingItem(f) }))
+      .concat(ops.map(op => ({ date: op.date, rank: 0, html: () => surgeryItem(op) })))
+      // Same-day ties put the operation first: the scan that shares its date is the
+      // post-operative film, so it can only come after.
+      .sort((a, b) => a.date.localeCompare(b.date) || a.rank - b.rank);
 
     let s = `<p class="eyebrow">${esc(REGION_LABEL[lv.region] || lv.region)}${lv.sub ? ' · ' + esc(lv.sub) : ''}</p>`;
     s += `<h2 class="detail-title">${esc(lv.label)}</h2>`;
@@ -112,6 +133,18 @@
        + (lv.surgical ? `<span class="tag tag-surgery">Prior surgery</span>` : '')
        + `<span class="status-text">${esc(lv.status)}</span></p>`;
     s += `<p class="lede">${esc(lv.summary)}</p>`;
+
+    // Surgeries up front — for a level that has been operated on twice, that is the
+    // first thing you want, not something to find partway down the timeline.
+    if (ops.length) {
+      s += `<h3 class="section-head">Surgery at this level — ${ops.length}</h3>`;
+      s += `<ul class="ops">` + ops.map(op =>
+        `<li class="op">`
+        + `<p class="op-head"><span class="op-date">${esc(op.dateLabel || fmtDate(op.date))}</span>`
+        + (op.dateUncertain ? `<span class="tag tag-flag">Date inferred</span>` : '') + `</p>`
+        + `<p class="op-label">${esc(op.label)}</p>`
+        + `</li>`).join('') + `</ul>`;
+    }
 
     const metrics = lv.coverage ? coverageMetrics() : lv.metrics;
     if (metrics && metrics.length) {
@@ -122,8 +155,10 @@
       s += `</dl>`;
     }
 
-    s += `<h3 class="section-head">Progression — ${sorted.length} report${sorted.length === 1 ? '' : 's'}</h3>`;
-    s += `<ol class="timeline">${sorted.map(findingItem).join('')}</ol>`;
+    const nScans = lv.findings.length;
+    s += `<h3 class="section-head">Progression — ${nScans} report${nScans === 1 ? '' : 's'}`
+       + (ops.length ? ` and ${ops.length} operation${ops.length === 1 ? '' : 's'}` : '') + `</h3>`;
+    s += `<ol class="timeline">${entries.map(e => e.html()).join('')}</ol>`;
     return s;
   }
 

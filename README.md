@@ -69,15 +69,15 @@ accession numbers, ICD codes or ages — since `data.js` is what goes public.
 
 `node tools/check-contrast.mjs` — exits non-zero if any pair drops below AA in any theme.
 
-## Two dating decisions worth knowing
+## Dates
 
-- **`2026-08-9_mri_spine.txt` is placed as a late-2025 pre-operative study.** Its content compares to
-  the 2016 MRI and describes native C5-6 and C6-7 discs with osteophytes, which cannot coexist with
-  the November 2025 disc replacements. The app flags this wherever the study appears; the filename
-  date is what is doubted, not the findings.
-- **Two surgeries were never imaged directly** and are shown as ranges pinned to their bracketing
-  scans ("Between April 2015 and May 2016"), labelled *date inferred*, rather than given invented
-  dates.
+Every study is dated from its own report. One exception is flagged in the UI rather than papered
+over: **two surgeries were never imaged directly**, so they show as ranges pinned to their bracketing
+scans — "Between April 2015 and May 2016" — and carry a *date inferred* tag. Replace `date` and drop
+`dateLabel` / `dateUncertain` in `SURGERIES` (`assets/js/data.js`) once the operative dates are known.
+
+Surgeries are their own events on each level's timeline, not properties of whichever scan caught
+them, so an operation is never shown on the date of the film that followed it.
 
 ## Accessibility
 

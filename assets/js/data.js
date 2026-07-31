@@ -32,12 +32,10 @@ const SCANS = [
     impression: 'Levoscoliosis. Degenerative disc disease at L4-5.' },
   { id: 's2025-08-11-xr',   date: '2025-08-11', modality: 'X-ray', region: 'Full spine', title: 'X-ray scoliosis survey and lumbar spine, standing', file: '2025-08-11_xray_spine.txt',
     impression: 'Sigmoid curvature of the thoracolumbar spine with minimal right-sided superior pelvic tilt. Multilevel disc degeneration and facet arthrosis. No instability.' },
+  { id: 's2025-preop-mric', date: '2025-08-19', modality: 'MRI',   region: 'Cervical', title: 'MRI cervical spine, without contrast (pre-operative)', file: '2025-08-19_mri_spine.txt',
+    impression: 'Multilevel degenerative change, greatest at C5-C6 with moderate canal stenosis and severe bilateral foraminal narrowing. No cord edema or myelomalacia.' },
   { id: 's2025-08-25-xr',   date: '2025-08-25', modality: 'X-ray', region: 'Cervical', title: 'X-ray cervical spine, flexion / extension', file: '2025-08-25_xray-cervical.txt',
     impression: 'Interval development of severe degenerative disc changes in the lower cervical spine compared with 2014.' },
-  { id: 's2025-preop-mric', date: '2025-10-01', modality: 'MRI',   region: 'Cervical', title: 'MRI cervical spine, without contrast (pre-operative)', file: '2026-08-9_mri_spine.txt',
-    dateLabel: 'Late 2025', dateUncertain: true,
-    dateNote: 'The source file is named 2026-08-09, but the study compares to the 2016 MRI and describes native C5-6 and C6-7 discs with osteophytes — anatomy that no longer existed after the November 2025 disc replacements. It is placed here as the pre-operative study. Treat the date, not the findings, as the uncertain part.',
-    impression: 'Multilevel degenerative change, greatest at C5-C6 with moderate canal stenosis and severe bilateral foraminal narrowing. No cord edema or myelomalacia.' },
   { id: 's2025-11-22-xr',   date: '2025-11-22', modality: 'X-ray', region: 'Cervical', title: 'X-ray cervical spine, standing (post-operative)', file: '2025-11-25_xray-cervical.txt',
     impression: 'Status post disc arthroplasty at C5-6 and C6-7; hardware intact.' },
   { id: 's2026-01-06-xr',   date: '2026-01-06', modality: 'X-ray', region: 'Cervical', title: 'X-ray cervical spine, 4-5 views with flexion / extension', file: '2026-01-06_xray-spine.txt',
@@ -83,7 +81,7 @@ const LEVELS = [
     findings: [
       { scan: 's2014-08-21-mri', severity: 'moderate', text: 'Low-lying cerebellar tonsils protruding 7 mm below the foramen magnum. No other acute intracranial abnormality.', quote: 'Low-lying cerebellar tonsils protrude 7 mm below the foramen magnum.' },
       { scan: 's2014-08-21-ct', severity: 'normal', text: 'Pre-operative navigation CT. No hemorrhage, mass lesion or midline shift; ventricles normal.' },
-      { scan: 's2014-08-26-ct', severity: 'moderate', event: 'surgery', text: 'Immediately after suboccipital craniectomy: expected pneumocephalus in the posterior fossa and right frontal region, small blood products in the craniectomy site, trace fluid in the resection bed. No significant mass effect.' },
+      { scan: 's2014-08-26-ct', severity: 'moderate', event: 'post-op', text: 'Immediately after suboccipital craniectomy: expected pneumocephalus in the posterior fossa and right frontal region, small blood products in the craniectomy site, trace fluid in the resection bed. No significant mass effect.' },
       { scan: 's2014-09-15-ct', severity: 'severe', text: 'Three weeks post-op: new CSF-density subdural collection up to 7 mm over the left cerebral convexity and beneath the tentorium, with slight mass effect but no midline shift. A 2.8 × 5.1 cm fluid collection along the craniectomy site, possibly a CSF leak. Pneumocephalus had resolved.' },
       { scan: 's2014-09-16-mri', severity: 'severe', text: 'Collection at the craniectomy site now measured 6 × 4.3 × 9 cm with rim enhancement — pseudomeningocele, seroma, or infection could not be separated by imaging. Bilateral holohemispheric subdural hygromas along the tentorium and falx. Diffuse dural enhancement, raising reactive change vs. intracranial hypotension vs. infection.' },
       { scan: 's2015-02-14-mrib', severity: 'mild', text: 'Six months on: the fluid space has resolved, with scar in that region. Posterior fossa structures normal; ventricles, cisterns and enhancement all normal.' },
@@ -154,7 +152,7 @@ const LEVELS = [
       { scan: 's2016-04-07-mric', severity: 'mild', text: 'Mild disc degenerative changes. No significant disc herniation, cervical stenosis, or foraminal stenosis.' },
       { scan: 's2025-08-25-xr', severity: 'severe', text: 'Degenerative disc changes, predominantly C5-6 and C6-7, new since the 2014 study. Read as interval development of severe degenerative disc disease in the lower cervical spine.' },
       { scan: 's2025-preop-mric', severity: 'severe', text: '4 mm posterior disc-osteophyte complex with moderate spinal canal stenosis, AP diameter down to 7 mm. Facet hypertrophy with severe bilateral neural foraminal narrowing. Moderate disc space narrowing with mixed Modic endplate changes and an anterior endplate osteophyte. No evidence of cord edema or myelomalacia.' },
-      { scan: 's2025-11-22-xr', severity: 'mild', event: 'surgery', text: 'Newly visualized disc arthroplasty hardware at C5-6, intact and appropriately aligned. Prevertebral soft tissue edema, gas and a surgical drain — expected immediately post-op.' },
+      { scan: 's2025-11-22-xr', severity: 'mild', event: 'post-op', text: 'Newly visualized disc arthroplasty hardware at C5-6, intact and appropriately aligned. Prevertebral soft tissue edema, gas and a surgical drain — expected immediately post-op.' },
       { scan: 's2026-01-06-xr', severity: 'mild', text: 'Arthroplasty redemonstrated with stable alignment. Drain removed. No instability with flexion or extension.' },
       { scan: 's2026-02-17-xrc', severity: 'mild', text: 'Stable disc arthroplasty. Vertebral body heights maintained, spinal canal within normal limits, no instability.' },
       { scan: 's2026-04-13-xr', severity: 'mild', text: 'Unchanged appearance of the C5-C7 arthroplasty hardware. No instability.' }
@@ -171,7 +169,7 @@ const LEVELS = [
       { scan: 's2016-04-07-mric', severity: 'moderate', text: 'Disc degenerative changes with mild bulging, stable since 2015, but the Modic 1 reactive endplate signal changes have progressed. Slight central canal narrowing without cord compression; nerve root foramina remain patent.' },
       { scan: 's2025-08-25-xr', severity: 'severe', text: 'Degenerative disc changes, predominantly C5-6 and C6-7, new since 2014 — read as severe.' },
       { scan: 's2025-preop-mric', severity: 'severe', text: '3 mm posterior disc-osteophyte complex with mild-to-moderate spinal canal stenosis, AP diameter down to 8 mm. Facet hypertrophy with moderate-to-severe bilateral neural foraminal narrowing.' },
-      { scan: 's2025-11-22-xr', severity: 'mild', event: 'surgery', text: 'Newly visualized disc arthroplasty hardware at C6-7, intact and appropriately aligned.' },
+      { scan: 's2025-11-22-xr', severity: 'mild', event: 'post-op', text: 'Newly visualized disc arthroplasty hardware at C6-7, intact and appropriately aligned.' },
       { scan: 's2026-01-06-xr', severity: 'mild', text: 'Redemonstrated with stable alignment; no instability with flexion or extension.' },
       { scan: 's2026-02-17-xrc', severity: 'mild', text: 'Stable disc arthroplasty; no instability on flexion or extension.' },
       { scan: 's2026-04-13-xr', severity: 'mild', text: 'Unchanged hardware appearance. No instability.' }
@@ -255,7 +253,7 @@ const LEVELS = [
     ],
     findings: [
       { scan: 's2015-04-29-mri', severity: 'severe', text: 'Focal disc extrusion in the left lateral recess, effacing the recess and the left L5 nerve. Moderately severe left neural foraminal narrowing; right foramen patent. Facet degenerative changes. Loss of T2 disc signal. No central canal stenosis.', quote: 'Focal disc extrusion is noted in the left lateral recess causing effacement of the lateral recess and effacing the left L5 nerve.' },
-      { scan: 's2016-05-12-mri', severity: 'moderate', event: 'surgery', text: 'After left laminotomy and microdiscectomy: improved appearance, the left central extrusion displacing the L5 root has resolved, thecal sac decompressed, no significant enhancing peridural scar. Residual left-sided bulging and a chronic left disc osteophyte, with mild narrowing of the left L4 foramen.' },
+      { scan: 's2016-05-12-mri', severity: 'moderate', event: 'post-op', text: 'After left laminotomy and microdiscectomy: improved appearance, the left central extrusion displacing the L5 root has resolved, thecal sac decompressed, no significant enhancing peridural scar. Residual left-sided bulging and a chronic left disc osteophyte, with mild narrowing of the left L4 foramen.' },
       { scan: 's2017-08-15-xr', severity: 'moderate', text: 'Disc space narrowing at L4-5 is evident. No pathologic motion with flexion and extension. Levoscoliosis.' },
       { scan: 's2025-08-11-xr', severity: 'moderate', text: 'Multilevel endplate osteophytosis with the greatest disc space narrowing at L4-5. Vertebral body heights and alignment maintained; no definite instability on flexion or extension.' },
       { scan: 's2026-02-07-mri', severity: 'severe', text: 'Moderate disc space narrowing with desiccation and Modic type I endplate changes from L4 to S1. Mild canal stenosis at 9 mm from a left subarticular / foraminal disc protrusion contacting the descending left L5 and exiting left L4 nerve roots, with ligamentum flavum thickening, dorsal epidural fat and severe bilateral facet arthropathy. Slightly larger than on the 2016 MRI.' },
@@ -280,7 +278,7 @@ const LEVELS = [
       { scan: 's2015-04-29-mri', severity: 'normal', text: 'No disc herniation, central spinal stenosis, or foraminal compromise.' },
       { scan: 's2016-05-12-mri', severity: 'normal', text: 'No disc herniation, central spinal stenosis, or foraminal compromise.' },
       { scan: 's2026-02-07-mri', severity: 'severe', text: 'Severe facet arthropathy with a left foraminal disc protrusion contacting the exiting left L5 nerve root. Severe left with moderate right neural foraminal narrowing. Modic type I endplate changes.' },
-      { scan: 's2026-07-14-mri', severity: 'severe', event: 'surgery', text: 'Status post left L5 hemilaminotomy and discectomy, an interval change from the previous MRI. Patchy enhancement at the surgical site, likely granulation tissue or epidural fibrosis. A small left foraminal disc protrusion remains, contacting the exiting left L5 nerve root. Severe facet arthropathy persists.' }
+      { scan: 's2026-07-14-mri', severity: 'severe', event: 'post-op', text: 'Status post left L5 hemilaminotomy and discectomy, an interval change from the previous MRI. Patchy enhancement at the surgical site, likely granulation tissue or epidural fibrosis. A small left foraminal disc protrusion remains, contacting the exiting left L5 nerve root. Severe facet arthropathy persists.' }
     ]
   },
   {
