@@ -48,7 +48,21 @@ const checks = [
   ['focus ring on page background',             3.0, t => t['focus-ring'], t => t['bg']],
   ['mild hatch line on its own tint',           3.0, t => t['accent-blue'],   t => mix(t['accent-blue'], t['bg-panel'], 0.15)],
   ['moderate hatch line on its own tint',       3.0, t => t['accent-purple'], t => mix(t['accent-purple'], t['bg-panel'], 0.15)],
-  ['severe hatch line on its own tint',         3.0, t => t['accent-pink'],   t => mix(t['accent-pink'], t['bg-panel'], 0.15)]
+  ['severe hatch line on its own tint',         3.0, t => t['accent-pink'],   t => mix(t['accent-pink'], t['bg-panel'], 0.15)],
+
+  // Theme picker — the panel sits on --bg-elevated, a surface nothing else uses.
+  ['dropdown option text on panel',             4.5, t => t['text'],          t => t['bg-elevated']],
+  ['dropdown secondary text on panel',          4.5, t => t['text-muted'],    t => t['bg-elevated']],
+  ['dropdown group label on panel',             4.5, t => t['text-muted'],    t => t['bg-elevated']],
+  ['dropdown option text on selected tint',     4.5, t => t['text'],          t => mix(t['text'], t['bg-elevated'], 0.07)],
+  ['dropdown secondary on selected tint',       4.5, t => t['text-muted'],    t => mix(t['text'], t['bg-elevated'], 0.07)],
+  ['dropdown option text on focus tint',        4.5, t => t['text'],          t => mix(t['focus-ring'], t['bg-elevated'], 0.14)],
+  ['dropdown secondary on focus tint',          4.5, t => t['text-muted'],    t => mix(t['focus-ring'], t['bg-elevated'], 0.14)],
+  ['dropdown focus border on panel',            3.0, t => t['focus-ring'],    t => t['bg-elevated']],
+  ['dropdown panel border on page bg',          3.0, t => t['border-strong'], t => t['bg']],
+  ['theme trigger border on panel',             3.0, t => t['border-strong'], t => t['bg-panel']],
+  ['theme trigger caret (muted) on panel',      4.5, t => t['text-muted'],    t => t['bg-panel']],
+  ['reduce-motion label on panel',              4.5, t => t['text-muted'],    t => t['bg-panel']]
 ];
 
 const worst = new Map();

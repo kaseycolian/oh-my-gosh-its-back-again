@@ -82,13 +82,10 @@ button { cursor: pointer; }
 
 .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1.25rem; }
 .control { display: flex; flex-direction: column; gap: 0.25rem; }
-.control-label, .control label {
+.control-label {
   font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--text-muted);
 }
-.control-check { flex-direction: row; align-items: center; gap: 0.45rem; padding-bottom: 0.4rem; }
-.control-check input { width: 1.05rem; height: 1.05rem; accent-color: var(--accent-blue); margin: 0; }
-.control-check label { text-transform: none; letter-spacing: 0; font-size: 0.8125rem; }
 
 .segmented { display: flex; border: 1px solid var(--border-strong); }
 .segmented button {
@@ -100,10 +97,130 @@ button { cursor: pointer; }
 .segmented button:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, var(--bg-panel)); }
 .segmented button.is-on { background: var(--text); color: var(--bg-panel); font-weight: 600; }
 
-.select {
-  background: var(--bg-elevated); color: var(--text);
-  border: 1px solid var(--border-strong); padding: 0.4rem 0.5rem;
-  min-height: 2.25rem; max-width: 16rem;
+/* Appearance cluster — set apart by a hairline and pitched below the view toggle
+   in the visual hierarchy. */
+.prefs { display: flex; align-items: center; gap: 0.75rem; }
+.prefs::before {
+  content: ""; align-self: stretch; width: 1px;
+  background: var(--border); margin-right: 0.25rem;
+}
+
+.pref-check {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  min-height: 1.875rem; padding: 0.25rem 0.1rem;   /* target ≥ 24px incl. its text */
+  font-size: 0.75rem; color: var(--text-muted); cursor: pointer;
+}
+.pref-check:hover { color: var(--text); }
+.pref-check input { width: 0.9rem; height: 0.9rem; margin: 0; accent-color: var(--accent-blue); }
+
+/* ---------- theme picker ------------------------------------------------
+   The listbox behaviour, keyboard model and screen-reader wiring come from the
+   vendored assets/theme/dropdown.{css,js}. Only the skin is changed here: square
+   corners, hairline borders, no glow — matching the rest of the app.
+
+   dropdown.css's stated accessibility invariants are preserved deliberately:
+   the focused option keeps a solid BORDER (a background wash alone would not
+   reach 3:1 for SC 1.4.11), selection keeps its tick so it is never colour-alone
+   (SC 1.4.1), coarse pointers keep 44px rows, and the forced-colors cues are
+   re-asserted at the end of this file. Do not fold these into a tint. */
+
+:root { --dur: 120ms; }   /* dropdown.css transitions read this; it lives in components.css, which this app does not vendor */
+
+.prefs .dropdown { width: auto; }
+
+.prefs .dropdown-toggle {
+  width: auto;
+  gap: 0.4rem;
+  min-height: 1.875rem;          /* 30px — clears the 24px floor of SC 2.5.8 */
+  padding: 0.25rem 0.4rem;
+  color: var(--text-muted);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  box-shadow: none;
+  transition: background-color var(--dur) linear, color var(--dur) linear;
+}
+.prefs .dropdown-toggle:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text) 7%, var(--bg-panel));
+}
+.prefs .dropdown-toggle[aria-expanded="true"] {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text) 10%, var(--bg-panel));
+  box-shadow: none;
+}
+.prefs .dropdown-toggle:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* The value text stays in the DOM — the trigger's accessible name is built from
+   it — but the button itself shows only the swatch, so theming stays quiet. */
+.prefs .dropdown-value {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.prefs .dropdown-caret { color: currentColor; }
+.prefs .dropdown-caret svg { width: 13px; height: 13px; }
+
+/* Current theme's four accents, painted by assets/js/theme-trigger.js. */
+.trigger-swatch { flex: none; display: inline-flex; border: 1px solid var(--border); }
+.trigger-swatch > span { display: block; width: 6px; height: 14px; }
+
+.dropdown-panel, .dropdown-panel[popover] {
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  /* A floating layer needs to separate from the page; kept flat and neutral so it
+     reads as elevation rather than as a card. */
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--text) 16%, transparent);
+}
+.dropdown-list { padding: 0; }
+
+.dropdown-option {
+  border-radius: 0;
+  border-width: 1px;
+  min-height: 2.25rem;
+  padding: 0.3rem 0.6rem;
+  scroll-margin: 0;
+}
+.dropdown-option:focus {
+  border-color: var(--focus-ring);
+  background: color-mix(in srgb, var(--focus-ring) 14%, transparent);
+}
+/* Bold plus a tick, never colour on its own. */
+.dropdown-option[aria-selected="true"] {
+  color: var(--text);
+  font-weight: 700;
+  text-shadow: none;
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.dropdown-check { color: var(--text); }
+
+.dropdown-primary { font-size: 0.8125rem; }
+.dropdown-secondary { font-size: 0.6875rem; }
+.dropdown-option[aria-selected="true"] .dropdown-secondary { color: var(--text-muted); }
+
+.dropdown-swatch { border-radius: 0; border-color: var(--border); }
+
+.dropdown-group-label {
+  color: var(--text-muted);
+  text-shadow: none;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  padding: 0.6rem 0.6rem 0.25rem;
+}
+.dropdown-group + .dropdown-group { margin-top: 0; padding-top: 0.15rem; }
+
+/* Fallback when dropdown.js has not run: the native <select> is still the control
+   and must stay usable. dropdown.js adds .dropdown-native once it takes over. */
+.prefs select:not(.dropdown-native) {
+  background: var(--bg-panel); color: var(--text);
+  border: 1px solid var(--border-strong); border-radius: 0;
+  min-height: 1.875rem; max-width: 12rem; font-size: 0.75rem;
 }
 
 /* ---------- layout ----------------------------------------------------- */
@@ -389,10 +506,9 @@ button { cursor: pointer; }
   :root { --gutter: 0.85rem; }
   .metric { grid-template-columns: minmax(0, 1fr); }
   .metric dd { margin-bottom: 0.15rem; }
-  .legend-keys { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .controls { width: 100%; }
-  .select { max-width: none; width: 100%; }
-  .control:has(.select) { flex: 1 1 100%; }
+  .controls { width: 100%; justify-content: space-between; }
+  .prefs { gap: 0.5rem; }
+  .prefs::before { display: none; }   /* the wrap already separates the clusters */
 }
 
 /* ---------- motion ------------------------------------------------------ */
@@ -412,4 +528,35 @@ button { cursor: pointer; }
   transition: none !important;
   animation: none !important;
   scroll-behavior: auto !important;
+}
+
+/* ---------- Windows High Contrast --------------------------------------
+   The theme-picker overrides above sit after dropdown.css, so they would win over
+   its forced-colors block and strip the one focus cue High Contrast leaves. The
+   cues are re-asserted here rather than being left to source order. */
+
+@media (forced-colors: active) {
+  .prefs .dropdown-toggle,
+  .dropdown-panel,
+  .dropdown-panel[popover] { border-color: ButtonBorder; }
+
+  .prefs .dropdown-toggle:focus-visible { outline-color: CanvasText; }
+
+  .dropdown-option:focus {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+    forced-color-adjust: none;
+  }
+  .dropdown-option:focus .dropdown-primary,
+  .dropdown-option:focus .dropdown-secondary,
+  .dropdown-option:focus .dropdown-check { color: HighlightText; }
+
+  .dropdown-option[aria-selected="true"] { background: Canvas; color: CanvasText; }
+
+  /* The diagram leans on colour-mix fills that forced-colors discards; the hatch
+     patterns and the tick meters still carry severity, but make sure the outlines
+     that define each shape survive. */
+  .spine .disc, .bones .body, .bones .process, .sacral .body, .cranium { forced-color-adjust: none; }
+  .level.is-selected .row-bg { fill: Highlight; fill-opacity: 0.25; }
 }

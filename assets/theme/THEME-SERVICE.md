@@ -15,14 +15,24 @@ Rules: keep WCAG AA 2.2 · default theme is Rink Classic · the selector uses th
 ## Applied configuration (current decisions on record)
 - Component styling: `colors-only` — the app defines its own crisp components (square corners,
   hairline rules, no cards or shadows) and pulls every colour from the theme tokens.
-  `components.css` and `dropdown.css` were deliberately **not** vendored.
+  `components.css` was deliberately **not** vendored.
+- `dropdown.css` + `dropdown.js` **are** vendored, for the theme picker only. The behaviour is used
+  as shipped; only the skin is overridden in `assets/app.css` (square corners, hairline borders, no
+  glow). The file's stated accessibility invariants are preserved on purpose — focused option keeps
+  a solid border rather than a wash, selection keeps its tick, coarse pointers keep 44px rows — and
+  because the app's overrides load after `dropdown.css`, its `forced-colors` cues are re-asserted at
+  the end of `app.css`. `--dur` is defined in `app.css` since it normally comes from
+  `components.css`, which is not vendored.
 - Effects: `effects.css` is linked for its `--motion` gate and token definitions, but **no `.fx-*`
   class is applied anywhere** — no glow, no grid backdrop, no gradient scrollbar. The neon identity
   is intentionally unused; this is a clinical-record UI.
 - Fonts: `kept app fonts` — a system UI stack (`--font-app` in `assets/app.css`). The theme display
   fonts are not used.
-- Selector: `theme-service selector` (`<select data-theme-select>`, native control) — placement:
-  masthead, beside the view toggle and the reduce-motion checkbox.
+- Selector: `theme-service selector`, upgraded to the accessible listbox via `data-dropdown` —
+  placement: masthead, right of the view toggle behind a hairline divider. Deliberately low
+  emphasis: the trigger is a 60×30 swatch-and-caret button whose value text is visually hidden but
+  still in the accessibility tree, so the button announces as "Theme, &lt;current theme&gt;". The panel
+  anchors to `.controls` (`data-dropdown-anchor`) so it stays readable despite the small trigger.
 - Existing themes: `none` — greenfield project.
 
 ## App-specific token mapping
@@ -49,3 +59,9 @@ stroke, so the stroke carries the required non-text contrast.
   Colors-only integration: vendored `theme.css`, `effects.css`, `theme-init.js`, `theme-select.js`,
   `themes.index.json`. Theme selector + reduce-motion toggle in the masthead. Severity scale mapped
   onto the four accents. No `.fx-*` effects, no `components.css`, system fonts kept.
+- `2026-07-30` — Replaced the native `<select>` with the vendored accessible listbox
+  (`dropdown.css` + `dropdown.js`, `data-dropdown`) and demoted the picker to a small swatch trigger,
+  so theming reads as a convenience rather than a feature. Skin overridden to the app's crisp look;
+  behaviour, keyboard model and `forced-colors` cues left intact. `assets/js/theme-trigger.js` paints
+  the current theme's accents onto the trigger. All 33 app-created colour pairs re-checked at AA
+  across all 16 themes via `tools/check-contrast.mjs`.

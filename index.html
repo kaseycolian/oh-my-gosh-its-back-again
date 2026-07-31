@@ -10,6 +10,7 @@
 <script src="assets/theme/theme-init.js"></script>
 <link rel="stylesheet" href="assets/theme/theme.css">
 <link rel="stylesheet" href="assets/theme/effects.css">
+<link rel="stylesheet" href="assets/theme/dropdown.css">
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
@@ -30,13 +31,17 @@
           <button type="button" data-view="front" aria-pressed="false">Front</button>
         </div>
       </div>
-      <div class="control">
-        <label class="control-label" for="theme-select">Theme</label>
-        <select id="theme-select" data-theme-select class="select"></select>
-      </div>
-      <div class="control control-check">
-        <input type="checkbox" id="motion-toggle" data-motion-toggle>
-        <label for="motion-toggle">Reduce motion</label>
+      <!-- Appearance. Deliberately quiet: theming is a convenience, not a feature
+           of the record. The panel anchors to .controls so it stays readable even
+           though its trigger is small. -->
+      <div class="prefs">
+        <label class="sr-only" for="theme-select">Theme</label>
+        <select id="theme-select" data-theme-select data-dropdown data-dropdown-anchor=".controls"></select>
+
+        <label class="pref-check">
+          <input type="checkbox" data-motion-toggle>
+          <span>Reduce motion</span>
+        </label>
       </div>
     </div>
   </div>
@@ -108,6 +113,10 @@
 <script src="assets/js/data.js"></script>
 <script src="assets/js/spine.js"></script>
 <script src="assets/js/app.js"></script>
+<!-- dropdown.js first so theme-select.js can upgrade the native <select> into the
+     accessible listbox; theme-trigger.js last, once the options exist. -->
+<script src="assets/theme/dropdown.js"></script>
 <script src="assets/theme/theme-select.js"></script>
+<script src="assets/js/theme-trigger.js"></script>
 </body>
 </html>
