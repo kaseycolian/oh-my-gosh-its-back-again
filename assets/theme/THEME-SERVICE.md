@@ -32,8 +32,11 @@ Rules: keep WCAG AA 2.2 · default theme is Rink Classic · the selector uses th
   placement: masthead, far right — the only control there since the diagram's view toggle moved
   down into the spine section. Deliberately low
   emphasis: the trigger is a 60×30 swatch-and-caret button whose value text is visually hidden but
-  still in the accessibility tree, so the button announces as "Theme, &lt;current theme&gt;". The panel
-  anchors to `.controls` (`data-dropdown-anchor`) so it stays readable despite the small trigger.
+  still in the accessibility tree, so the button announces as "Theme, &lt;current theme&gt;". A small
+  uppercase "Theme" caption sits to its left — a `<span>` named via `aria-labelledby` rather than a
+  `<label for>`, because the native `<select>` is `display: none` and a real label would be an inert
+  click target. The panel anchors to `.controls` (`data-dropdown-anchor`) so it stays readable
+  despite the small trigger.
 - Existing themes: `none` — greenfield project.
 
 ## App-specific token mapping
@@ -70,3 +73,7 @@ stroke, so the stroke carries the required non-text contrast.
   the picker is now the only header control; dropped the hairline divider that had separated the two
   clusters. Added a `forced-colors` rule for `.segmented button.is-on`, whose inverted fill was being
   flattened to Canvas, leaving bold weight as the only cue for the active view.
+- `2026-07-31` — Gave the picker a visible "Theme" caption, using a shared `.field` / `.field-label`
+  pair also used by the diagram's view toggle. The class names follow the convention `dropdown.css`
+  documents for `components.css`, which is not vendored; the type is the app's existing `.eyebrow`
+  step, so no new scale was introduced.

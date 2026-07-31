@@ -38,8 +38,14 @@
            of the record. The panel anchors to .controls so it stays readable even
            though its trigger is small. -->
       <div class="prefs">
-        <label class="sr-only" for="theme-select">Theme</label>
-        <select id="theme-select" data-theme-select data-dropdown data-dropdown-anchor=".controls"></select>
+        <!-- A caption rather than a <label for>: dropdown.js hides the native select
+             outright, so a real label would be a click target that does nothing.
+             resolveLabel() reads aria-labelledby first, so the trigger still
+             announces "Theme, <current theme>". -->
+        <div class="field">
+          <span class="field-label" id="theme-label">Theme</span>
+          <select id="theme-select" aria-labelledby="theme-label" data-theme-select data-dropdown data-dropdown-anchor=".controls"></select>
+        </div>
 
         <label class="pref-check">
           <input type="checkbox" data-motion-toggle>
@@ -67,9 +73,14 @@
          rather than the header. The caption under it is the readout of the state it
          sets, which is why the two are one block and in this order. -->
     <div class="viewbar">
-      <div class="segmented" id="view-toggle" role="group" aria-label="Diagram view">
-        <button type="button" data-view="side" class="is-on" aria-pressed="true">Side</button>
-        <button type="button" data-view="front" aria-pressed="false">Front</button>
+      <div class="field">
+        <!-- Side/Front names the options; the label names what they switch. The hidden
+             suffix keeps the visible text a prefix of the accessible name (SC 2.5.3). -->
+        <span class="field-label" id="view-label">View<span class="sr-only"> — spine diagram orientation</span></span>
+        <div class="segmented" id="view-toggle" role="group" aria-labelledby="view-label">
+          <button type="button" data-view="side" class="is-on" aria-pressed="true">Side</button>
+          <button type="button" data-view="front" aria-pressed="false">Front</button>
+        </div>
       </div>
       <p class="caption" id="view-caption"></p>
     </div>

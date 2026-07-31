@@ -109,6 +109,17 @@ button { cursor: pointer; }
    anchors to it (data-dropdown-anchor). */
 .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1.25rem; }
 
+/* A control and its caption. Named for the .field / .field-label convention the
+   vendored dropdown documents for its own usage — those live in components.css,
+   which is not vendored, so the names are free and the picker ends up labelled the
+   way its component expects. The type is .eyebrow's, so no new step in the scale;
+   the 600 weight is what buys legibility at 11px without spending width. */
+.field { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.field-label {
+  font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-muted); white-space: nowrap;
+}
+
 .segmented { display: flex; border: 1px solid var(--border-strong); }
 .segmented button {
   background: var(--bg-panel); color: var(--text-muted);
