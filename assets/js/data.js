@@ -64,8 +64,12 @@ const SURGERIES = [
     note: 'Two weeks after the MRI that found the disc extrusion sitting on the left L5 nerve. The MRI a year later called it a good post-operative result.' },
   { date: '2025-11-21', label: 'C5-6 and C6-7 total disc arthroplasty (disc replacement)', levels: ['c5-c6', 'c6-c7'],
     note: 'For myeloradiculopathy and kyphosis. The standing x-ray the following day found the hardware intact and aligned, and it has been unchanged on every film since.' },
-  { date: '2026-05-21', label: 'Left L5 hemilaminotomy and discectomy', levels: ['l5-s1'],
-    note: 'The MRI eight weeks later found a small left foraminal disc protrusion still contacting the exiting left L5 nerve root.' }
+  /* One approach, one nerve, two levels: the left L5 root is compressed twice over —
+     as the descending root at L4-5 and as the exiting root at L5-S1 — so a single
+     hemilaminotomy addressed both. The imaging never says this; only the operative
+     record does. The July MRI names just one interval surgical change, at L5. */
+  { date: '2026-05-21', label: 'Left L5 hemilaminotomy and discectomy — decompressing L4-5 and L5-S1', levels: ['l4-l5', 'l5-s1'],
+    note: 'The left L5 nerve root was being compressed at two levels at once: as the descending root at L4-5 and again as the exiting root at L5-S1. One left L5 hemilaminotomy reached both. The MRI eight weeks later found the two levels going in opposite directions — at L5-S1 a small left foraminal protrusion still touching that root, and at L4-5 a protrusion larger than it had been in February.' }
 ];
 
 /* severity: normal | mild | moderate | severe.  surgical: hardware or prior surgery at this level.
@@ -243,18 +247,20 @@ const LEVELS = [
     ]
   },
   {
-    id: 'l4-l5', label: 'L4-L5', sub: 'Lumbar disc · operated 2015', region: 'lumbar',
+    id: 'l4-l5', label: 'L4-L5', sub: 'Lumbar disc · operated 2015 and 2026', region: 'lumbar',
     severity: 'severe', surgical: true, canal: 'mild',
-    status: 'Severe · protrusion growing again',
-    summary: 'The longest-running problem in the spine and the one currently moving in the wrong direction. A disc extrusion pinching the left L5 nerve in 2015 was operated on, and the 2016 MRI showed a good result. Ten years of slow degeneration later, the protrusion is back on the left, contacting both the descending L5 and exiting L4 nerve roots, and it grew measurably between February and July 2026 — which is why the latest report recommends spine surgery follow-up.',
+    status: 'Severe · larger again after the 2026 decompression',
+    summary: 'The longest-running problem in the spine and the one still moving in the wrong direction. A disc extrusion pinching the left L5 nerve in 2015 was operated on, and the 2016 MRI showed a good result. Ten years of slow degeneration later the protrusion is back on the left, contacting both the descending L5 and exiting L4 nerve roots. The left L5 hemilaminotomy on 21 May 2026 — the same operation that decompressed L5-S1 — reached this level too, but the first MRI afterwards found the protrusion larger than it had been in February rather than smaller, with the canal still measuring 9 mm. That is why the latest report recommends spine surgery follow-up.',
     metrics: [
-      ['Canal diameter', '9 mm (mild stenosis)'],
+      ['Canal diameter', '9 mm (mild stenosis) — unchanged Feb to Jul 2026'],
       ['Protrusion', 'Left subarticular / foraminal'],
       ['Nerves contacted', 'Descending left L5, exiting left L4'],
+      ['Foramina', 'Moderate left, mild right — unchanged in Jul 2026'],
       ['Facets', 'Severe, both sides'],
       ['Endplates', 'Modic type I, L4 to S1'],
-      ['Prior surgery', '13 May 2015 — left L4 hemilaminotomy / microdiscectomy'],
-      ['Trend', 'Enlarging — Feb 2026 to Jul 2026']
+      ['First surgery', '13 May 2015 — left L4 hemilaminotomy / microdiscectomy'],
+      ['Second surgery', '21 May 2026 — left L5 hemilaminotomy, decompressing this level and L5-S1'],
+      ['Trend', 'Enlarging — larger in Jul 2026 than Feb 2026, after surgery']
     ],
     findings: [
       { scan: 's2015-04-29-mri', severity: 'severe', text: 'Focal disc extrusion in the left lateral recess, effacing the recess and the left L5 nerve. Moderately severe left neural foraminal narrowing; right foramen patent. Facet degenerative changes. Loss of T2 disc signal. No central canal stenosis.', quote: 'Focal disc extrusion is noted in the left lateral recess causing effacement of the lateral recess and effacing the left L5 nerve.' },
@@ -263,19 +269,19 @@ const LEVELS = [
       { scan: 's2025-08-11-xr', severity: 'moderate', text: 'Multilevel endplate osteophytosis with the greatest disc space narrowing at L4-5. Vertebral body heights and alignment maintained; no definite instability on flexion or extension.' },
       { scan: 's2026-02-07-mri', severity: 'severe', text: 'Moderate disc space narrowing with desiccation and Modic type I endplate changes from L4 to S1. Mild canal stenosis at 9 mm from a left subarticular / foraminal disc protrusion contacting the descending left L5 and exiting left L4 nerve roots, with ligamentum flavum thickening, dorsal epidural fat and severe bilateral facet arthropathy. Slightly larger than on the 2016 MRI.' },
       { scan: 's2026-02-17-xrl', severity: 'severe', text: 'Degenerative disc disease most severe at L4-5. No instability with flexion or extension.' },
-      { scan: 's2026-07-14-mri', severity: 'severe', text: 'Interval increased size of the left L4-5 subarticular / foraminal disc protrusion relative to the prior MRI. Spine surgery follow-up is recommended.', quote: 'Interval increased size of left L4-5 subarticular/foraminal disc protrusion.' }
+      { scan: 's2026-07-14-mri', severity: 'severe', event: 'post-op', text: 'The left subarticular / foraminal protrusion has increased in size relative to February and still contacts the descending left L5 and exiting left L4 nerve roots. Canal stenosis remains mild at 9 mm, with ligamentum flavum thickening, dorsal epidural fat and severe bilateral facet arthropathy; neuroforaminal narrowing unchanged. Status post left L4 hemilaminotomy. Spine surgery follow-up is recommended.', quote: 'Interval increased size of left L4-5 subarticular/foraminal disc protrusion.' }
     ]
   },
   {
     id: 'l5-s1', label: 'L5-S1', sub: 'Lumbosacral junction · operated 2026', region: 'lumbar',
     severity: 'severe', surgical: true, canal: 'normal',
     status: 'Severe · operated 2026, residual protrusion',
-    summary: 'Completely clean in 2015 and 2016, then the fastest-moving level in the whole record. By February 2026 it had severe facet arthropathy and a left foraminal disc protrusion on the exiting left L5 nerve, with severe left foraminal narrowing. A left L5 hemilaminotomy and discectomy followed, but the July 2026 MRI reports that a small left foraminal protrusion still contacts that same nerve root.',
+    summary: 'Completely clean in 2015 and 2016, then the fastest-moving level in the whole record. By February 2026 it had severe facet arthropathy and a left foraminal disc protrusion on the exiting left L5 nerve, with severe left foraminal narrowing. A left L5 hemilaminotomy and discectomy followed on 21 May 2026 — one operation that decompressed the same nerve root here and one level up at L4-5 — but the July 2026 MRI reports that a small left foraminal protrusion still contacts that nerve root.',
     metrics: [
       ['Facets', 'Severe arthropathy'],
       ['Foramina', 'Severe left, moderate right'],
       ['Nerve contacted', 'Exiting left L5'],
-      ['Surgery', '21 May 2026 — left L5 hemilaminotomy / discectomy'],
+      ['Surgery', '21 May 2026 — left L5 hemilaminotomy / discectomy, decompressing this level and L4-5'],
       ['Post-op', 'Patchy enhancement — granulation tissue or epidural fibrosis'],
       ['Residual', 'Small left foraminal protrusion still contacting the nerve']
     ],
