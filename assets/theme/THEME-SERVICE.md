@@ -29,7 +29,8 @@ Rules: keep WCAG AA 2.2 · default theme is Rink Classic · the selector uses th
 - Fonts: `kept app fonts` — a system UI stack (`--font-app` in `assets/app.css`). The theme display
   fonts are not used.
 - Selector: `theme-service selector`, upgraded to the accessible listbox via `data-dropdown` —
-  placement: masthead, right of the view toggle behind a hairline divider. Deliberately low
+  placement: masthead, far right — the only control there since the diagram's view toggle moved
+  down into the spine section. Deliberately low
   emphasis: the trigger is a 60×30 swatch-and-caret button whose value text is visually hidden but
   still in the accessibility tree, so the button announces as "Theme, &lt;current theme&gt;". The panel
   anchors to `.controls` (`data-dropdown-anchor`) so it stays readable despite the small trigger.
@@ -65,3 +66,7 @@ stroke, so the stroke carries the required non-text contrast.
   behaviour, keyboard model and `forced-colors` cues left intact. `assets/js/theme-trigger.js` paints
   the current theme's accents onto the trigger. All 33 app-created colour pairs re-checked at AA
   across all 16 themes via `tools/check-contrast.mjs`.
+- `2026-07-31` — Moved the Side/Front diagram toggle out of the masthead into the spine section, so
+  the picker is now the only header control; dropped the hairline divider that had separated the two
+  clusters. Added a `forced-colors` rule for `.segmented button.is-on`, whose inverted fill was being
+  flattened to Canvas, leaving bold weight as the only cue for the active view.

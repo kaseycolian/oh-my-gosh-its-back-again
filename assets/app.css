@@ -105,12 +105,9 @@ button { cursor: pointer; }
 }
 .brand-sub { margin: 0.15rem 0 0; color: var(--text-muted); font-size: 0.8125rem; }
 
+/* Holds the appearance cluster alone; kept as an element because the theme panel
+   anchors to it (data-dropdown-anchor). */
 .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1.25rem; }
-.control { display: flex; flex-direction: column; gap: 0.25rem; }
-.control-label {
-  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--text-muted);
-}
 
 .segmented { display: flex; border: 1px solid var(--border-strong); }
 .segmented button {
@@ -122,13 +119,8 @@ button { cursor: pointer; }
 .segmented button:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, var(--bg-panel)); }
 .segmented button.is-on { background: var(--text); color: var(--bg-panel); font-weight: 600; }
 
-/* Appearance cluster — set apart by a hairline and pitched below the view toggle
-   in the visual hierarchy. */
+/* Appearance cluster — now the only thing in the header besides the brand. */
 .prefs { display: flex; align-items: center; gap: 0.75rem; }
-.prefs::before {
-  content: ""; align-self: stretch; width: 1px;
-  background: var(--border); margin-right: 0.25rem;
-}
 
 .pref-check {
   display: inline-flex; align-items: center; gap: 0.4rem;
@@ -363,10 +355,14 @@ button { cursor: pointer; }
 
 /* ---------- caption, legend, whole-spine tabs -------------------------- */
 
-.caption {
-  margin: 1rem 0 0; color: var(--text-muted); font-size: 0.8125rem;
-  border-top: var(--rule); padding-top: 0.75rem;
+/* Stacked rather than side by side: the caption runs to three lines at this column
+   width, so setting the control beside it would cut the measure to ~45 characters
+   and strand empty space under the buttons. The rule is where the diagram ends. */
+.viewbar {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.7rem;
+  margin-top: 1rem; padding-top: 0.85rem; border-top: var(--rule);
 }
+.caption { margin: 0; color: var(--text-muted); font-size: 0.8125rem; }
 
 .legend { margin-top: 1rem; border-top: var(--rule); padding-top: 0.85rem; }
 .legend-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -560,9 +556,7 @@ button { cursor: pointer; }
   :root { --gutter: 0.85rem; }
   .metric { grid-template-columns: minmax(0, 1fr); }
   .metric dd { margin-bottom: 0.15rem; }
-  .controls { width: 100%; justify-content: space-between; }
   .prefs { gap: 0.5rem; }
-  .prefs::before { display: none; }   /* the wrap already separates the clusters */
 }
 
 /* ---------- motion ------------------------------------------------------ */
@@ -607,6 +601,14 @@ button { cursor: pointer; }
   .dropdown-option:focus .dropdown-check { color: HighlightText; }
 
   .dropdown-option[aria-selected="true"] { background: Canvas; color: CanvasText; }
+
+  /* The pressed segment is an inverted fill, which forced-colors flattens back to
+     Canvas — leaving bold weight as the only cue for which view is active. */
+  .segmented button.is-on {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
 
   /* The diagram leans on colour-mix fills that forced-colors discards; the hatch
      patterns and the tick meters still carry severity, but make sure the outlines

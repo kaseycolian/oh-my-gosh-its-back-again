@@ -34,13 +34,6 @@
       </div>
     </div>
     <div class="controls">
-      <div class="control">
-        <span class="control-label" id="view-label">View</span>
-        <div class="segmented" id="view-toggle" role="group" aria-labelledby="view-label">
-          <button type="button" data-view="side" class="is-on" aria-pressed="true">Side</button>
-          <button type="button" data-view="front" aria-pressed="false">Front</button>
-        </div>
-      </div>
       <!-- Appearance. Deliberately quiet: theming is a convenience, not a feature
            of the record. The panel anchors to .controls so it stays readable even
            though its trigger is small. -->
@@ -70,7 +63,16 @@
 
     <div id="spine-mount" class="spine-mount"></div>
 
-    <p class="caption" id="view-caption"></p>
+    <!-- The toggle redraws the diagram and nothing else, so it belongs to the diagram
+         rather than the header. The caption under it is the readout of the state it
+         sets, which is why the two are one block and in this order. -->
+    <div class="viewbar">
+      <div class="segmented" id="view-toggle" role="group" aria-label="Diagram view">
+        <button type="button" data-view="side" class="is-on" aria-pressed="true">Side</button>
+        <button type="button" data-view="front" aria-pressed="false">Front</button>
+      </div>
+      <p class="caption" id="view-caption"></p>
+    </div>
 
     <div class="legend" role="group" aria-label="Diagram key">
       <!-- Patterns for the swatches below; the diagram builds its own copies. -->
