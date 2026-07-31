@@ -46,13 +46,31 @@ assets/app.css                all styling; consumes theme tokens, defines no lit
 assets/js/data.js             the structured dataset — scans, surgeries, levels, spine geometry
 assets/js/spine.js            builds the diagram SVG from the geometry tables
 assets/js/app.js              selection, the tab keyboard model, detail-panel rendering
+assets/js/theme-trigger.js    paints the active theme's accents onto the picker button
+assets/js/favicon.js          re-tints the tab icon whenever the theme changes
+assets/favicon.svg            the icon — four vertebral bodies, tapering and curving
+assets/favicon-32.png         GENERATED bitmap fallback
+assets/apple-touch-icon.png   GENERATED bitmap fallback (iOS home screen)
 assets/theme/                 vendored theme-service v1.0.0 (see THEME-SERVICE.md)
 tools/build-reports.mjs       regenerates assets/js/reports.js from data/scans-txt/
 tools/check-contrast.mjs      WCAG AA audit of every colour pair, across all 16 themes
+tools/build-icons.mjs         re-renders the PNG fallbacks from favicon.svg
 
 data/scans-txt/               LOCAL ONLY (gitignored) — the source reports
 assets/js/reports.js          LOCAL ONLY (gitignored) — GENERATED from the above
 ```
+
+## The icon
+
+A favicon cannot read the page's stylesheet, and the theme here is chosen at runtime rather than only
+by OS preference — so `assets/favicon.svg` alone would only ever cover light and dark. `favicon.js`
+rebuilds the icon from the tokens actually in force and swaps the `<link href>`, so the tab tracks
+all sixteen themes. The static SVG still carries a `prefers-color-scheme` fallback for when JS has
+not run.
+
+Editing it means changing the geometry in **both** `assets/favicon.svg` and the `BODIES` table in
+`assets/js/favicon.js`, then running `node tools/build-icons.mjs` (needs `playwright`, which is not a
+project dependency — `npm i playwright` first).
 
 ## Adding or changing a report
 

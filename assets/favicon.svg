@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Spine">
+  <!-- Static fallback: Rink Classic, adapting to the OS light/dark preference.
+       assets/js/favicon.js replaces this at runtime with one built from the tokens
+       of whichever theme is actually active, so the tab icon tracks the page.
+       Four vertebral bodies rather than five or six: at 16 CSS px each block is
+       only ~2.6px tall, and any more of them close up into a solid bar. -->
+  <style>
+    .tile { fill: #110620; stroke: #8064c0; }
+    .bone { fill: #ff2ec4; }
+    @media (prefers-color-scheme: light) {
+      .tile { fill: #ffffff; stroke: #9070c0; }
+      .bone { fill: #b60f86; }
+    }
+  </style>
+  <rect class="tile" x="0.5" y="0.5" width="31" height="31" stroke-width="1"/>
+  <g class="bone">
+    <rect x="14.75" y="2.1"  width="8.5"  height="5.2"/>
+    <rect x="12.2"  y="9.5"  width="10"   height="5.4"/>
+    <rect x="8.45"  y="17.1" width="11.5" height="5.6"/>
+    <rect x="9.3"   y="24.9" width="11"   height="4.6"/>
+  </g>
+</svg>
