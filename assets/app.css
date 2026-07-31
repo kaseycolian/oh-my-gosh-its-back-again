@@ -1,0 +1,415 @@
+/* Spine imaging record — app styling.
+   Colours come exclusively from theme-service tokens (assets/theme/theme.css); nothing
+   here is a literal colour. The shapes are deliberately plain: square corners, hairline
+   rules, no shadows, no cards. */
+
+/* ---------- tokens ----------------------------------------------------- */
+
+:root {
+  --font-app: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-num: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Severity scale, mapped onto the theme accents. */
+  --sev-normal: var(--border-strong);
+  --sev-mild: var(--accent-blue);
+  --sev-moderate: var(--accent-purple);
+  --sev-severe: var(--accent-pink);
+  --sev-surgical: var(--accent-green);
+
+  --rule: 1px solid var(--border);
+  --gutter: clamp(1rem, 3vw, 2rem);
+}
+
+/* Any element carrying a severity class exposes it as --sev for its subtree.
+   --sev-text is the same colour except at "normal", where --border-strong is a 3:1
+   border colour and would fail AA as text; muted text is used there instead. */
+.sev-normal   { --sev: var(--sev-normal);   --sev-text: var(--text-muted); }
+.sev-mild     { --sev: var(--sev-mild);     --sev-text: var(--sev-mild); }
+.sev-moderate { --sev: var(--sev-moderate); --sev-text: var(--sev-moderate); }
+.sev-severe   { --sev: var(--sev-severe);   --sev-text: var(--sev-severe); }
+
+/* ---------- base ------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-app);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3 { line-height: 1.2; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+p { margin: 0 0 0.85rem; }
+p:last-child { margin-bottom: 0; }
+
+button, select, input { font: inherit; color: inherit; border-radius: 0; }
+button { cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 20;
+  background: var(--bg-elevated); color: var(--text);
+  border: 1px solid var(--border-strong); padding: 0.6rem 1rem;
+}
+.skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------- masthead --------------------------------------------------- */
+
+.masthead {
+  border-bottom: 1px solid var(--border-strong);
+  background: var(--bg-panel);
+}
+.masthead-inner {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1rem var(--gutter);
+  padding: 1rem var(--gutter);
+}
+.brand h1 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); }
+.brand-sub { margin: 0.15rem 0 0; color: var(--text-muted); font-size: 0.8125rem; }
+
+.controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1.25rem; }
+.control { display: flex; flex-direction: column; gap: 0.25rem; }
+.control-label, .control label {
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+.control-check { flex-direction: row; align-items: center; gap: 0.45rem; padding-bottom: 0.4rem; }
+.control-check input { width: 1.05rem; height: 1.05rem; accent-color: var(--accent-blue); margin: 0; }
+.control-check label { text-transform: none; letter-spacing: 0; font-size: 0.8125rem; }
+
+.segmented { display: flex; border: 1px solid var(--border-strong); }
+.segmented button {
+  background: var(--bg-panel); color: var(--text-muted);
+  border: 0; padding: 0.45rem 0.95rem; min-height: 2.25rem;
+  font-size: 0.8125rem; letter-spacing: 0.02em;
+}
+.segmented button + button { border-left: 1px solid var(--border-strong); }
+.segmented button:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, var(--bg-panel)); }
+.segmented button.is-on { background: var(--text); color: var(--bg-panel); font-weight: 600; }
+
+.select {
+  background: var(--bg-elevated); color: var(--text);
+  border: 1px solid var(--border-strong); padding: 0.4rem 0.5rem;
+  min-height: 2.25rem; max-width: 16rem;
+}
+
+/* ---------- layout ----------------------------------------------------- */
+
+/* Columns stretch to the taller of the two (the spine), so the sticky detail panel
+   keeps its backing surface all the way down instead of stranding empty page. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(330px, 30rem) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.spine-col { padding: var(--gutter); min-width: 0; }
+.detail-col { border-left: 1px solid var(--border); min-width: 0; background: var(--bg-panel); }
+.detail-inner {
+  position: sticky; top: 0;
+  max-height: 100vh; overflow-y: auto;
+  padding: var(--gutter);
+  background: var(--bg-panel);
+}
+
+/* ---------- spine diagram ---------------------------------------------- */
+
+.spine-mount { display: flex; justify-content: center; }
+.spine { width: 100%; max-width: 30rem; height: auto; display: block; overflow: visible; }
+
+.spine text, .legend-swatches text { font-family: var(--font-app); }
+
+/* hatch patterns — the non-colour half of the severity encoding */
+.pat-mild     .pat-bg { fill: color-mix(in srgb, var(--sev-mild) 15%, var(--bg-panel)); }
+.pat-moderate .pat-bg { fill: color-mix(in srgb, var(--sev-moderate) 15%, var(--bg-panel)); }
+.pat-severe   .pat-bg { fill: color-mix(in srgb, var(--sev-severe) 15%, var(--bg-panel)); }
+.pat-mild     .pat-line { stroke: var(--sev-mild); stroke-width: 1.1; }
+.pat-moderate .pat-line { stroke: var(--sev-moderate); stroke-width: 1; }
+.pat-severe   .pat-line { stroke: var(--sev-severe); stroke-width: 1; }
+
+/* bones */
+.bones .body, .bones .process, .sacral .body {
+  fill: color-mix(in srgb, var(--border-strong) 12%, var(--bg-panel));
+  stroke: var(--border-strong); stroke-width: 1; stroke-linejoin: round;
+}
+.bones .process-ap, .bones .pedicle {
+  fill: none; stroke: var(--border-strong); stroke-width: 1;
+}
+.bones .pedicle-bar { fill: none; stroke: var(--border-strong); stroke-width: 1.6; }
+.sacral-line { stroke: var(--border-strong); stroke-width: 0.8; opacity: 0.7; }
+
+.cranium {
+  fill: color-mix(in srgb, var(--border-strong) 8%, var(--bg-panel));
+  stroke: var(--border-strong); stroke-width: 1;
+}
+.skull-base { fill: none; stroke: var(--border-strong); stroke-width: 1.6; stroke-linecap: round; }
+.craniectomy { fill: none; stroke: var(--sev-surgical); stroke-width: 3.2; stroke-linecap: round; }
+
+/* spinal canal — neutral on purpose, it is anatomy rather than a severity */
+/* 75% keeps the outline at or above 3:1 against the panel in every theme
+   (worst case acid-arcade-light, 3.39:1), so the band's extent is unambiguous. */
+.canal {
+  fill: color-mix(in srgb, var(--text-muted) 26%, var(--bg-panel));
+  stroke: color-mix(in srgb, var(--text-muted) 75%, var(--bg-panel));
+  stroke-width: 0.8;
+}
+
+/* region rail */
+.region-bar { stroke: var(--border-strong); stroke-width: 3; }
+.region-label {
+  fill: var(--text-muted); font-size: 9.5px; letter-spacing: 0.16em;
+  text-anchor: middle; dominant-baseline: middle;
+}
+
+/* Cobb construction, front view */
+.cobb-line, .cobb-brace { stroke: var(--text-muted); stroke-width: 1; fill: none; }
+.cobb-line { stroke-dasharray: 4 3; }
+.cobb-text { fill: var(--text); font-size: 10px; text-anchor: middle; letter-spacing: 0.04em; }
+
+/* discs by severity */
+.disc { stroke-width: 1.4; stroke-linejoin: round; }
+.sev-normal   .disc { fill: color-mix(in srgb, var(--sev-normal) 14%, var(--bg-panel)); stroke: var(--sev-normal); }
+.sev-mild     .disc { fill: url(#pat-mild);     stroke: var(--sev-mild); }
+.sev-moderate .disc { fill: url(#pat-moderate); stroke: var(--sev-moderate); }
+.sev-severe   .disc { fill: url(#pat-severe);   stroke: var(--sev-severe); }
+
+.disc.unimaged {
+  fill: none; stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 2 2.5;
+}
+/* green halo behind an operated level, independent of its severity */
+.disc-surgical { fill: none; stroke: var(--sev-surgical); stroke-width: 5; stroke-linejoin: round; }
+
+/* interactive level rows */
+.level { cursor: pointer; }
+.level .hit { fill: transparent; }
+.level .row-bg { fill: transparent; }
+.level .focus-ring { fill: none; stroke: none; }
+
+.connector { stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 1.5 2.5; }
+.rail-label {
+  fill: var(--text); font-size: 11.5px; font-weight: 500;
+  dominant-baseline: middle; letter-spacing: 0.01em;
+}
+.tick { fill: none; stroke: var(--sev, var(--sev-normal)); stroke-width: 1; }
+.tick.on { fill: var(--sev, var(--sev-normal)); }
+.glyph-surgical { fill: none; stroke: var(--sev-surgical); stroke-width: 2.2; stroke-linecap: round; }
+
+.level:hover .row-bg { fill: color-mix(in srgb, var(--text) 6%, transparent); }
+.level:hover .rail-label { font-weight: 700; }
+.level:hover .disc { stroke-width: 2.2; }
+
+.level.is-selected .row-bg { fill: color-mix(in srgb, var(--text) 10%, transparent); }
+.level.is-selected .disc { stroke-width: 2.8; }
+.level.is-selected .rail-label { font-weight: 700; }
+.level.is-selected .connector { stroke: var(--text); stroke-dasharray: none; }
+
+.level:focus { outline: none; }
+.level:focus-visible .focus-ring { stroke: var(--focus-ring); stroke-width: 2.5; }
+
+/* ---------- caption, legend, whole-spine tabs -------------------------- */
+
+.caption {
+  margin: 1rem 0 0; color: var(--text-muted); font-size: 0.8125rem;
+  border-top: var(--rule); padding-top: 0.75rem;
+}
+
+.legend { margin-top: 1rem; border-top: var(--rule); padding-top: 0.85rem; }
+.legend-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.legend .disc { stroke-width: 1.4; }
+.legend .sev-mild     .disc { fill: url(#lg-mild); }
+.legend .sev-moderate .disc { fill: url(#lg-moderate); }
+.legend .sev-severe   .disc { fill: url(#lg-severe); }
+
+/* Swatch and label live in the same list item, so they cannot drift apart. */
+.legend-keys {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem;
+  font-size: 0.6875rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.legend-keys li { display: flex; align-items: center; gap: 0.4rem; }
+.legend-keys .sw { width: 32px; height: 15px; flex: none; }
+.legend-keys .sw-wide { width: 48px; }
+
+.vtabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+.vtab {
+  display: flex; flex-direction: column; gap: 0.1rem; text-align: left;
+  background: var(--bg-panel); border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--sev, var(--border-strong));
+  padding: 0.5rem 0.75rem; min-height: 2.75rem; flex: 1 1 12rem;
+}
+.vtab:hover { background: color-mix(in srgb, var(--text) 6%, var(--bg-panel)); }
+.vtab.is-selected { background: color-mix(in srgb, var(--text) 10%, var(--bg-panel)); }
+.vtab-label { font-size: 0.875rem; font-weight: 600; }
+.vtab-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ---------- detail panel ----------------------------------------------- */
+
+.detail { max-width: 46rem; }
+
+.eyebrow {
+  margin: 0 0 0.3rem; font-size: 0.6875rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-muted);
+}
+.detail-title { font-size: clamp(1.4rem, 3.2vw, 1.9rem); margin-bottom: 0.6rem; }
+
+.status-line {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+.status-text { color: var(--text-muted); font-size: 0.875rem; }
+
+.tag {
+  display: inline-block; padding: 0.1rem 0.45rem;
+  border: 1px solid var(--sev, var(--border-strong));
+  color: var(--sev-text, var(--text));
+  font-size: 0.6875rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+}
+.tag-surgery { border-color: var(--sev-surgical); color: var(--sev-surgical); }
+.tag-flag { border-style: dashed; border-color: var(--text); color: var(--text); }
+
+.lede { font-size: 1.0625rem; }
+
+.section-head {
+  margin: 1.75rem 0 0.6rem; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted);
+  border-bottom: var(--rule); padding-bottom: 0.35rem;
+}
+
+.metrics { margin: 0; }
+.metric {
+  display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: 0.1rem 1.25rem; padding: 0.45rem 0;
+}
+.metric + .metric { border-top: var(--rule); }
+.metric dt { color: var(--text-muted); font-size: 0.8125rem; }
+.metric dd { margin: 0; font-size: 0.9375rem; }
+
+/* timeline */
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+.tl-item { position: relative; padding: 0 0 1.4rem 1.25rem; }
+.tl-item::before {
+  content: ""; position: absolute; left: -4.5px; top: 0.55rem;
+  width: 8px; height: 8px; background: var(--sev, var(--sev-normal));
+}
+.tl-item.is-surgery::before {
+  background: var(--sev-surgical); width: 11px; height: 11px; left: -6px; top: 0.45rem;
+}
+.tl-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem; }
+.tl-date { font-weight: 600; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.tl-mod {
+  font-family: var(--font-num); font-size: 0.6875rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.tl-body { margin: 0 0 0.35rem; }
+.tl-quote {
+  margin: 0.4rem 0; padding: 0.15rem 0 0.15rem 0.8rem;
+  border-left: 2px solid var(--sev, var(--border-strong));
+  color: var(--text-muted); font-style: italic; font-size: 0.9375rem;
+}
+.tl-note {
+  margin: 0.4rem 0; padding: 0.1rem 0 0.1rem 0.8rem;
+  border-left: 2px dashed var(--border-strong);
+  color: var(--text-muted); font-size: 0.8125rem;
+}
+.tl-src { margin: 0.3rem 0 0; color: var(--text-muted); font-size: 0.75rem; }
+/* Shown in place of the report expander when the local-only text bundle is absent. */
+.tl-file {
+  margin: 0.3rem 0 0; color: var(--text-muted);
+  font-family: var(--font-num); font-size: 0.6875rem;
+}
+
+.report { margin-top: 0.5rem; }
+.report summary {
+  cursor: pointer; font-size: 0.75rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0;
+}
+.report summary:hover { color: var(--text); }
+.report pre {
+  margin: 0.4rem 0 0; padding: 0.85rem;
+  background: var(--bg); border: var(--rule);
+  font-family: var(--font-num); font-size: 0.75rem; line-height: 1.5;
+  white-space: pre-wrap; word-break: break-word;
+  max-height: 26rem; overflow-y: auto;
+}
+
+/* jump buttons */
+.jumps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
+.jump {
+  display: flex; flex-direction: column; gap: 0.1rem; text-align: left;
+  background: var(--bg-panel); border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--sev, var(--border-strong));
+  padding: 0.45rem 0.7rem; min-height: 2.5rem;
+  font-size: 0.875rem; font-weight: 600;
+}
+.jump:hover { background: color-mix(in srgb, var(--text) 6%, var(--bg-panel)); }
+.jump-sub { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); }
+
+.notes { margin: 0; padding-left: 1.1rem; color: var(--text-muted); font-size: 0.9375rem; }
+.notes li { margin-bottom: 0.35rem; }
+
+.disclaimer {
+  margin-top: 1.25rem; padding-top: 0.85rem; border-top: var(--rule);
+  color: var(--text-muted); font-size: 0.8125rem;
+}
+
+/* ---------- footer ----------------------------------------------------- */
+
+.foot {
+  border-top: 1px solid var(--border-strong); background: var(--bg-panel);
+  padding: 1rem var(--gutter); color: var(--text-muted); font-size: 0.8125rem;
+}
+.foot code { font-family: var(--font-num); font-size: 0.9em; color: var(--text); }
+
+/* ---------- responsive -------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .detail-col { border-left: 0; border-top: 1px solid var(--border-strong); }
+  .detail-inner { position: static; max-height: none; overflow: visible; }
+  .spine { max-width: 34rem; }
+  .masthead-inner { align-items: flex-start; }
+}
+
+@media (max-width: 560px) {
+  :root { --gutter: 0.85rem; }
+  .metric { grid-template-columns: minmax(0, 1fr); }
+  .metric dd { margin-bottom: 0.15rem; }
+  .legend-keys { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .controls { width: 100%; }
+  .select { max-width: none; width: 100%; }
+  .control:has(.select) { flex: 1 1 100%; }
+}
+
+/* ---------- motion ------------------------------------------------------ */
+
+.segmented button, .vtab, .jump, .level .disc, .level .row-bg {
+  transition: background-color 120ms linear, fill 120ms linear, stroke-width 120ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after {
+  transition: none !important;
+  animation: none !important;
+  scroll-behavior: auto !important;
+}

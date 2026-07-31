@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spine imaging record — 2014 to 2026</title>
+<meta name="description" content="Interactive record of MRI, CT and x-ray findings from the skull base to the sacrum.">
+<meta name="robots" content="noindex, nofollow">
+<!-- Applies the saved theme before first paint. Must stay external (CSP-safe). -->
+<script src="assets/theme/theme-init.js"></script>
+<link rel="stylesheet" href="assets/theme/theme.css">
+<link rel="stylesheet" href="assets/theme/effects.css">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<a class="skip" href="#detail">Skip to findings</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <h1>Spine imaging record</h1>
+      <p class="brand-sub">Skull base to sacrum · 23 studies · August 2014 – July 2026</p>
+    </div>
+    <div class="controls">
+      <div class="control">
+        <span class="control-label" id="view-label">View</span>
+        <div class="segmented" id="view-toggle" role="group" aria-labelledby="view-label">
+          <button type="button" data-view="side" class="is-on" aria-pressed="true">Side</button>
+          <button type="button" data-view="front" aria-pressed="false">Front</button>
+        </div>
+      </div>
+      <div class="control">
+        <label class="control-label" for="theme-select">Theme</label>
+        <select id="theme-select" data-theme-select class="select"></select>
+      </div>
+      <div class="control control-check">
+        <input type="checkbox" id="motion-toggle" data-motion-toggle>
+        <label for="motion-toggle">Reduce motion</label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+
+  <section class="spine-col" aria-labelledby="spine-heading">
+    <h2 class="sr-only" id="spine-heading">Spine diagram</h2>
+
+    <p class="sr-only">
+      Interactive diagram of 15 spinal levels. Use the arrow keys to move between levels;
+      the findings panel updates as you go. Severity is shown by colour and by hatching, and
+      operated levels carry a cross. A summary in text follows in the findings panel.
+    </p>
+
+    <div id="spine-mount" class="spine-mount"></div>
+
+    <p class="caption" id="view-caption"></p>
+
+    <div class="legend" role="group" aria-label="Diagram key">
+      <!-- Patterns for the swatches below; the diagram builds its own copies. -->
+      <svg class="legend-defs" aria-hidden="true" focusable="false"><defs>
+        <pattern id="lg-mild" class="pat-mild" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect class="pat-bg" x="-1" y="-1" width="9" height="9"/><line class="pat-line" x1="0" y1="0" x2="0" y2="7"/>
+        </pattern>
+        <pattern id="lg-moderate" class="pat-moderate" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect class="pat-bg" x="-1" y="-1" width="6" height="6"/><line class="pat-line" x1="0" y1="0" x2="0" y2="4"/>
+        </pattern>
+        <pattern id="lg-severe" class="pat-severe" width="4.5" height="4.5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect class="pat-bg" x="-1" y="-1" width="6.5" height="6.5"/>
+          <line class="pat-line" x1="0" y1="0" x2="0" y2="4.5"/><line class="pat-line" x1="0" y1="0" x2="4.5" y2="0"/>
+        </pattern>
+      </defs></svg>
+
+      <ul class="legend-keys">
+        <li class="sev-normal"><svg class="sw" viewBox="0 0 32 15" aria-hidden="true" focusable="false"><rect class="disc" x="1" y="1" width="30" height="13"/></svg>No findings</li>
+        <li class="sev-mild"><svg class="sw" viewBox="0 0 32 15" aria-hidden="true" focusable="false"><rect class="disc" x="1" y="1" width="30" height="13"/></svg>Mild</li>
+        <li class="sev-moderate"><svg class="sw" viewBox="0 0 32 15" aria-hidden="true" focusable="false"><rect class="disc" x="1" y="1" width="30" height="13"/></svg>Moderate</li>
+        <li class="sev-severe"><svg class="sw" viewBox="0 0 32 15" aria-hidden="true" focusable="false"><rect class="disc" x="1" y="1" width="30" height="13"/></svg>Severe</li>
+        <li><svg class="sw" viewBox="0 0 32 15" aria-hidden="true" focusable="false"><rect class="disc unimaged" x="1" y="1" width="30" height="13"/></svg>Not imaged</li>
+        <li class="sev-normal"><svg class="sw sw-wide" viewBox="0 0 48 15" aria-hidden="true" focusable="false">
+          <rect class="disc-surgical" x="2.5" y="2.5" width="27" height="10"/>
+          <rect class="disc" x="2.5" y="2.5" width="27" height="10"/>
+          <path class="glyph-surgical" d="M 40 3 V 12 M 35.5 7.5 H 44.5"/>
+        </svg>Operated / hardware</li>
+      </ul>
+    </div>
+
+    <div class="vtabs" id="virtual-tabs" role="tablist" aria-label="Whole-spine views" aria-orientation="horizontal"></div>
+  </section>
+
+  <section class="detail-col">
+    <div class="detail-inner">
+      <div id="detail" class="detail" role="tabpanel" tabindex="0"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Built from the plain-text radiology reports in <code>data/scans-txt/</code>. Wording of each
+  finding stays close to the original report; every entry can be expanded to the full source text.
+  Nothing here is a diagnosis or medical advice.</p>
+</footer>
+
+<!-- reports.js (the verbatim report text) is deliberately absent from the published
+     site — app.js loads it opportunistically and hides the expander when missing. -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/spine.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/theme/theme-select.js"></script>
+</body>
+</html>

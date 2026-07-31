@@ -1,0 +1,21 @@
+# ---------------------------------------------------------------------------
+# NOT PUBLISHED. This repo is public and serves a GitHub Page, so the raw
+# radiology reports and the generated bundle of their text stay local-only.
+# They carry physician names, accession numbers, ICD codes and ages that the
+# curated findings in assets/js/data.js deliberately leave out.
+# The app detects their absence and hides the "full report" expander.
+# Regenerate the bundle locally with: node tools/build-reports.mjs
+# ---------------------------------------------------------------------------
+data/scans-txt/
+assets/js/reports.js
+
+# Dependencies (the app itself has none; tools/ run on bare node)
+node_modules/
+package-lock.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
