@@ -71,13 +71,14 @@ accession numbers, ICD codes or ages — since `data.js` is what goes public.
 
 ## Dates
 
-Every study is dated from its own report. One exception is flagged in the UI rather than papered
-over: **two surgeries were never imaged directly**, so they show as ranges pinned to their bracketing
-scans — "Between April 2015 and May 2016" — and carry a *date inferred* tag. Replace `date` and drop
-`dateLabel` / `dateUncertain` in `SURGERIES` (`assets/js/data.js`) once the operative dates are known.
+Every study is dated from its own report. **Operative dates come from the patient**, not from the
+imaging — radiology reports only ever mention surgery in the past tense, so the record cannot supply
+them. One of the five operations (18 Sep 2014) leaves no trace in the reports at all beyond the
+problem visible before it and its resolution afterwards.
 
 Surgeries are their own events on each level's timeline, not properties of whichever scan caught
-them, so an operation is never shown on the date of the film that followed it.
+them, so an operation is never shown on the date of the film that followed it. On a shared date the
+operation sorts first, since a same-day scan can only be the post-operative film.
 
 ## Accessibility
 

@@ -52,31 +52,36 @@ const SCANS = [
     impression: 'Interval increased size of the left L4-5 disc protrusion and interval left L5 hemilaminotomy / discectomy. Spine surgery follow-up recommended.' }
 ];
 
+/* Operative dates supplied by the patient. None of them appear in the radiology
+   reports, which only ever describe surgery in the past tense — so this is the one
+   part of the record the imaging could not have told us. */
 const SURGERIES = [
   { date: '2014-08-26', label: 'Suboccipital craniectomy — Chiari I decompression', levels: ['ccj'],
-    note: 'C1 laminectomy was not performed (noted on the 2016 MRI). Complicated by a pseudomeningocele and subdural hygromas that resolved by February 2015.' },
-  { date: '2015-11-01', dateLabel: 'Between April 2015 and May 2016', dateUncertain: true,
-    label: 'Left L4-5 laminotomy and microdiscectomy', levels: ['l4-l5'],
-    note: 'Not directly imaged — dated from the 2016-05-12 MRI, which describes it as already done.' },
-  { date: '2025-11-22', label: 'C5-6 and C6-7 total disc arthroplasty (disc replacement)', levels: ['c5-c6', 'c6-c7'],
-    note: 'Performed for myeloradiculopathy and kyphosis. Hardware has been stable on every x-ray since.' },
-  { date: '2026-05-01', dateLabel: 'Between February and July 2026', dateUncertain: true,
-    label: 'Left L5 hemilaminotomy and discectomy', levels: ['l5-s1'],
-    note: 'Not directly imaged — dated from the 2026-07-14 MRI, which describes it as an interval change.' }
+    note: 'A C1 laminectomy was not performed, which the 2016 MRI notes explicitly. The same-day CT shows the expected pneumocephalus and a little blood at the craniectomy site.' },
+  { date: '2014-09-18', label: 'Second posterior fossa operation', levels: ['ccj'],
+    note: 'Two days after the MRI that found a 6 × 4.3 × 9 cm rim-enhancing collection at the craniectomy site, a possible CSF leak and bilateral subdural hygromas. The radiology record never names this procedure — it only shows the problem before it and the resolution after it.' },
+  { date: '2015-05-13', label: 'Left L4-5 laminotomy and microdiscectomy', levels: ['l4-l5'],
+    note: 'Two weeks after the MRI that found the disc extrusion sitting on the left L5 nerve. The MRI a year later called it a good post-operative result.' },
+  { date: '2025-11-21', label: 'C5-6 and C6-7 total disc arthroplasty (disc replacement)', levels: ['c5-c6', 'c6-c7'],
+    note: 'For myeloradiculopathy and kyphosis. The standing x-ray the following day found the hardware intact and aligned, and it has been unchanged on every film since.' },
+  { date: '2026-05-21', label: 'Left L5 hemilaminotomy and discectomy', levels: ['l5-s1'],
+    note: 'The MRI eight weeks later found a small left foraminal disc protrusion still contacting the exiting left L5 nerve root.' }
 ];
 
 /* severity: normal | mild | moderate | severe.  surgical: hardware or prior surgery at this level.
    canal: relative spinal-canal narrowing at this level, drives the canal ribbon width. */
 const LEVELS = [
   {
-    id: 'ccj', label: 'Craniocervical junction', sub: 'Skull base / posterior fossa', region: 'cranial',
+    id: 'ccj', label: 'Craniocervical junction', sub: 'Posterior fossa', region: 'cranial',
     severity: 'mild', surgical: true, canal: 'normal',
-    status: 'Decompressed 2014 · stable since 2016',
-    summary: 'Chiari I malformation — the cerebellar tonsils sat 7 mm below the foramen magnum — treated with a suboccipital craniectomy in August 2014. The early post-operative course was rocky: a large pseudomeningocele and bilateral subdural hygromas. All of that had resolved by February 2015, leaving scar tissue only, and imaging has been stable ever since.',
+    status: 'Two operations in 2014 · stable since 2015',
+    summary: 'Chiari I malformation — the cerebellar tonsils sat 7 mm below the foramen magnum — decompressed by suboccipital craniectomy on 26 August 2014. Three weeks later the imaging had turned: a 6 × 4.3 × 9 cm rim-enhancing collection at the craniectomy site, a possible CSF leak, and subdural hygromas over both hemispheres. A second operation followed on 18 September. That settled it — by February 2015 the collection had resolved, leaving scar tissue only, and every scan since has been stable.',
     metrics: [
       ['Tonsillar descent (2014, pre-op)', '7 mm below foramen magnum'],
-      ['Decompression', 'Suboccipital craniectomy, no C1 laminectomy'],
-      ['Latest assessment', 'Intracranial contents unremarkable']
+      ['First operation', '26 Aug 2014 — suboccipital craniectomy, no C1 laminectomy'],
+      ['Second operation', '18 Sep 2014 — for the post-operative collection'],
+      ['Time between them', '23 days'],
+      ['Latest assessment', 'Intracranial contents unremarkable (Aug 2025)']
     ],
     findings: [
       { scan: 's2014-08-21-mri', severity: 'moderate', text: 'Low-lying cerebellar tonsils protruding 7 mm below the foramen magnum. No other acute intracranial abnormality.', quote: 'Low-lying cerebellar tonsils protrude 7 mm below the foramen magnum.' },
@@ -84,7 +89,7 @@ const LEVELS = [
       { scan: 's2014-08-26-ct', severity: 'moderate', event: 'post-op', text: 'Immediately after suboccipital craniectomy: expected pneumocephalus in the posterior fossa and right frontal region, small blood products in the craniectomy site, trace fluid in the resection bed. No significant mass effect.' },
       { scan: 's2014-09-15-ct', severity: 'severe', text: 'Three weeks post-op: new CSF-density subdural collection up to 7 mm over the left cerebral convexity and beneath the tentorium, with slight mass effect but no midline shift. A 2.8 × 5.1 cm fluid collection along the craniectomy site, possibly a CSF leak. Pneumocephalus had resolved.' },
       { scan: 's2014-09-16-mri', severity: 'severe', text: 'Collection at the craniectomy site now measured 6 × 4.3 × 9 cm with rim enhancement — pseudomeningocele, seroma, or infection could not be separated by imaging. Bilateral holohemispheric subdural hygromas along the tentorium and falx. Diffuse dural enhancement, raising reactive change vs. intracranial hypotension vs. infection.' },
-      { scan: 's2015-02-14-mrib', severity: 'mild', text: 'Six months on: the fluid space has resolved, with scar in that region. Posterior fossa structures normal; ventricles, cisterns and enhancement all normal.' },
+      { scan: 's2015-02-14-mrib', severity: 'mild', event: 'post-op', text: 'The first imaging after the second operation, five months on: the fluid space has resolved, with scar in that region. Posterior fossa structures normal; ventricles, cisterns and enhancement all normal.' },
       { scan: 's2015-02-14-mric', severity: 'mild', text: 'From the cervical study: the seroma is no longer visible, scarring in the suboccipital region. Cerebellar tonsils and brainstem are not deformed. Foramen magnum intact.' },
       { scan: 's2016-04-07-mrib', severity: 'mild', text: 'Stable decompression, no fluid collection, good post-operative appearance overall. Otherwise a normal brain MRI.' },
       { scan: 's2016-04-07-mric', severity: 'mild', text: 'Posterior incision well healed with no significant fluid collection. Noted that a C1 laminectomy was not performed as part of the decompression.' },
@@ -145,7 +150,7 @@ const LEVELS = [
     severity: 'mild', surgical: true, canal: 'normal',
     status: 'Replaced Nov 2025 · stable',
     summary: 'The worst cervical level, and the reason for surgery. A minor bulge in 2015 became a 4 mm disc-osteophyte complex with the canal squeezed to 7 mm and severe narrowing of both nerve exits by 2025 — with myelopathy symptoms but, importantly, no cord signal change. Replaced with an artificial disc in November 2025; every x-ray since has called the hardware intact and stable.',
-    metrics: [['Pre-op canal diameter', '7 mm (moderate stenosis)'], ['Pre-op foramina', 'Severe, both sides'], ['Cord', 'No edema or myelomalacia'], ['Current', 'Disc arthroplasty, intact and aligned']],
+    metrics: [['Pre-op canal diameter', '7 mm (moderate stenosis)'], ['Pre-op foramina', 'Severe, both sides'], ['Cord', 'No edema or myelomalacia'], ['Current', 'Disc arthroplasty (21 Nov 2025), intact and aligned']],
     findings: [
       { scan: 's2014-08-21-xr', severity: 'normal', text: 'Disc spaces unremarkable; facet joints anatomically aligned.' },
       { scan: 's2015-02-14-mric', severity: 'mild', text: 'Minor disc bulge at the C5-6 level. Spinal cord normal; no abnormal enhancement.' },
@@ -163,7 +168,7 @@ const LEVELS = [
     severity: 'mild', surgical: true, canal: 'normal',
     status: 'Replaced Nov 2025 · stable',
     summary: 'The longest-running cervical finding: a small central disc extrusion was already there in 2015, and the Modic endplate changes were noted as progressing in 2016 — nine years before surgery. By 2025 the canal was down to 8 mm with moderate-to-severe foraminal narrowing. Replaced alongside C5-6 in November 2025 and stable since.',
-    metrics: [['First seen', '2015 — small central disc extrusion'], ['Pre-op canal diameter', '8 mm (mild-to-moderate stenosis)'], ['Pre-op foramina', 'Moderate to severe, both sides'], ['Current', 'Disc arthroplasty, intact and aligned']],
+    metrics: [['First seen', '2015 — small central disc extrusion'], ['Pre-op canal diameter', '8 mm (mild-to-moderate stenosis)'], ['Pre-op foramina', 'Moderate to severe, both sides'], ['Current', 'Disc arthroplasty (21 Nov 2025), intact and aligned']],
     findings: [
       { scan: 's2015-02-14-mric', severity: 'mild', text: 'Small central disc extrusion extending slightly above the interspace, a few millimetres, not associated with major stenosis.', quote: 'There is a small central disc extrusion at the C6-7 level.' },
       { scan: 's2016-04-07-mric', severity: 'moderate', text: 'Disc degenerative changes with mild bulging, stable since 2015, but the Modic 1 reactive endplate signal changes have progressed. Slight central canal narrowing without cord compression; nerve root foramina remain patent.' },
@@ -238,7 +243,7 @@ const LEVELS = [
     ]
   },
   {
-    id: 'l4-l5', label: 'L4-L5', sub: 'Lumbar disc · operated 2015-16', region: 'lumbar',
+    id: 'l4-l5', label: 'L4-L5', sub: 'Lumbar disc · operated 2015', region: 'lumbar',
     severity: 'severe', surgical: true, canal: 'mild',
     status: 'Severe · protrusion growing again',
     summary: 'The longest-running problem in the spine and the one currently moving in the wrong direction. A disc extrusion pinching the left L5 nerve in 2015 was operated on, and the 2016 MRI showed a good result. Ten years of slow degeneration later, the protrusion is back on the left, contacting both the descending L5 and exiting L4 nerve roots, and it grew measurably between February and July 2026 — which is why the latest report recommends spine surgery follow-up.',
@@ -248,7 +253,7 @@ const LEVELS = [
       ['Nerves contacted', 'Descending left L5, exiting left L4'],
       ['Facets', 'Severe, both sides'],
       ['Endplates', 'Modic type I, L4 to S1'],
-      ['Prior surgery', 'Left L4 hemilaminotomy / microdiscectomy'],
+      ['Prior surgery', '13 May 2015 — left L4 hemilaminotomy / microdiscectomy'],
       ['Trend', 'Enlarging — Feb 2026 to Jul 2026']
     ],
     findings: [
@@ -270,7 +275,7 @@ const LEVELS = [
       ['Facets', 'Severe arthropathy'],
       ['Foramina', 'Severe left, moderate right'],
       ['Nerve contacted', 'Exiting left L5'],
-      ['Surgery', 'Left L5 hemilaminotomy / discectomy'],
+      ['Surgery', '21 May 2026 — left L5 hemilaminotomy / discectomy'],
       ['Post-op', 'Patchy enhancement — granulation tissue or epidural fibrosis'],
       ['Residual', 'Small left foraminal protrusion still contacting the nerve']
     ],
